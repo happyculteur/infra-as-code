@@ -24,6 +24,9 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref DomainName
+      WebsiteConfiguration:
+        ErrorDocument: index.html
+        IndexDocument: index.html
     DeletionPolicy: Retain
 
   WebsiteBucketPolicy:
@@ -51,10 +54,10 @@ Resources:
       DistributionConfig:
         Comment: !Ref DomainName
         Origins:
-        - S3OriginConfig:
-            OriginAccessIdentity: ""
-          Id: S3bucket
-          DomainName: !GetAtt S3WebsiteBucket.DomainName
+        - CustomOriginConfig:
+            OriginProtocolPolicy: http-only
+          DomainName: !Select [ "2" , !Split [ "/" , !GetAtt S3WebsiteBucket.WebsiteURL ] ]
+          Id: S3BucketWebHosting
         Enabled: true
         HttpVersion: 'http2'
         DefaultRootObject: index.html
@@ -63,7 +66,7 @@ Resources:
         DefaultCacheBehavior:
           AllowedMethods: ["HEAD", "GET"]
           Compress: false
-          TargetOriginId: S3bucket
+          TargetOriginId: S3BucketWebHosting
           ForwardedValues:
             QueryString: 'true'
           ViewerProtocolPolicy: redirect-to-https
