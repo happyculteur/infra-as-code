@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: S3 bucket + CloudFront static website
+Description: S3 bucket + CloudFront static assets CDN
 
 #-------------------------------------------------------------------------------
 #--[ PARAMETERS ]---------------------------------------------------------------
